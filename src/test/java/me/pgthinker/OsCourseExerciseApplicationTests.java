@@ -14,12 +14,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
 class OsCourseExerciseApplicationTests {
 
-    private final String jsonResourcePath = "src/main/resources/static/json";
+    private final String jsonResourcePath = "/Users/pgthinker/StudyCode/GitHubProject/os_course_exercise_library/data/json";
 
     @Autowired
     private QuestionService questionService;
@@ -31,15 +32,18 @@ class OsCourseExerciseApplicationTests {
             return ;
         }
         File[] dirs = root.listFiles();
+        List<Question> questions = new ArrayList<>();
         for(File dir: dirs){
             if(dir.isDirectory()){
                 File[] files = dir.listFiles();
                 for(File jsonFile: files){
                     Question question = parseFileToObj(jsonFile);
-                    questionService.save(question);
+                    questions.add(question);
                 }
             }
         }
+        questionService.saveBatch(questions);
+
     }
 
     private Question parseFileToObj(File file) throws IOException{

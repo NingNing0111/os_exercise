@@ -82,13 +82,13 @@ const searchOption = ref<FormOptionList[]>([
     type: "select",
     prop: "type",
     label: "题型",
-    opts: [],
+    opts: [{ label: "全部", value: "all" }],
   },
   {
     type: "select",
     prop: "knowledge",
     label: "考点",
-    opts: [],
+    opts: [{ label: "全部", value: "all" }],
   },
 ]);
 const handleSearch = () => {

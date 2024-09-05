@@ -3,12 +3,9 @@ set global time_zone='+8:00';  #在标准时区上加+8小时,即东8区时间
 flush privileges; # 立即生效
 
 CREATE DATABASE IF NOT EXISTS os_exercise
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
+    CHARACTER SET utf8;
 
 USE os_exercise;
-
-drop table os_exercise.question;
 
 CREATE TABLE IF NOT EXISTS `question`(
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '题目ID',
