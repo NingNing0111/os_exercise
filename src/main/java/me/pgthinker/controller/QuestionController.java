@@ -48,32 +48,16 @@ public class QuestionController {
 
     @GetMapping("/{questionId}")
     public BaseResponse<QuestionVO> questionVOById(@PathVariable Long questionId){
-        QueryWrapper<Question> qw = new QueryWrapper<>();
-        qw.eq("id", questionId);
-        Question question = questionService.getOne(qw);
-        System.out.println(questionId+" ========= "+question);
-        QuestionVO questionVO = new QuestionVO();
-        BeanUtils.copyProperties(question,questionVO);
+        QuestionVO questionVO = questionService.getQuestionVOById(questionId);
+
         return ResultUtils.success(questionVO);
     }
 
     @GetMapping("/{current}/{pageSize}")
     public BaseResponse<IPage<QuestionVO>> questionVOPage( @PathVariable int current, @PathVariable int pageSize,@RequestParam(required = false) String type, @RequestParam(required = false) String knowledge){
-        QueryWrapper<Question> qw = new QueryWrapper<>();
-        if(!ObjectUtils.isEmpty(knowledge)){
-            qw.like("knowledge", knowledge);
-        }
-        if(!ObjectUtils.isEmpty(type)){
-            qw.eq("type",type);
-        }
-        if(pageSize > 50){
-            pageSize = 20;
-        }
 
-        // 查出所有元素
-        Page<Question> questionPage = new Page<>(current, pageSize);
-        Page<Question> page = questionService.page(questionPage, qw);
-        IPage<QuestionVO> questionVOIPage = PageCovertUtils.pageVoCovert(page, QuestionVO.class);
+        IPage<QuestionVO> questionVOIPage = questionService.questionsWithPage(current, pageSize, type, knowledge);
+
         return ResultUtils.success(questionVOIPage);
     }
 
@@ -91,55 +75,25 @@ public class QuestionController {
                 throw new BusinessException(ErrorCode.NO_AUTH_ERROR,"密码错误");
             }
         }
-        Long id = updateQuestion.getId();
-        Question storeQ = questionService.getById(id);
-        if(ObjectUtils.isEmpty(storeQ)){
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
-        }
-        String answer = updateQuestion.getAnswer();
-        String explain = updateQuestion.getExplain();
-        String content = updateQuestion.getContent();
-        if(ObjectUtils.isEmpty(answer) || ObjectUtils.isEmpty(explain) || ObjectUtils.isEmpty(content)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        storeQ.setAnswer(answer);
-        storeQ.setExplain(explain);
-        storeQ.setContent(content);
-        boolean isUpdated = questionService.updateById(storeQ);
+        boolean isUpdated = questionService.updateQuestion(updateQuestion);
         if(!isUpdated){
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR);
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"更新异常");
         }
 
-        return ResultUtils.success("修改成功");
+        return ResultUtils.success("更新成功");
     }
 
     @GetMapping("/types")
     public BaseResponse<List<QuestionTypeVO>> types(){
-        QuestionTypeEnum[] values = QuestionTypeEnum.values();
-        List<QuestionTypeVO> types = Arrays.asList(values).stream().map(item -> {
-            QuestionTypeVO questionTypeVO = new QuestionTypeVO();
-            questionTypeVO.setLabel(item.getText());
-            questionTypeVO.setValue(item.getValue());
-            return questionTypeVO;
-        }).collect(Collectors.toList());
+        List<QuestionTypeVO> types = questionService.questionTypes();
+
         return ResultUtils.success(types);
     }
 
     @GetMapping("/knowledge")
     public BaseResponse<List<QuestionKnowledgeVO>> knowledge(){
-        List<Question> list = questionService.list();
-        HashSet<String> knowledgeSet = new HashSet<>();
-        for(Question question: list){
-            List<String> knowledge = question.getKnowledge();
-            knowledgeSet.addAll(knowledge);
-        }
-        List<QuestionKnowledgeVO> res = knowledgeSet.stream().filter(StringUtils::hasText).map(item -> {
-            QuestionKnowledgeVO questionKnowledgeVO = new QuestionKnowledgeVO();
-            questionKnowledgeVO.setLabel(item);
-            questionKnowledgeVO.setValue(item);
-            return questionKnowledgeVO;
-        }).collect(Collectors.toList());
-        return ResultUtils.success(res);
+        List<QuestionKnowledgeVO> questionKnowledgeVOS = questionService.questionKnowledge();
+        return ResultUtils.success(questionKnowledgeVOS);
     }
 
 }

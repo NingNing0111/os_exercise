@@ -31,7 +31,8 @@ export default defineConfig({
     proxy: {
       "/api": {
         changeOrigin: true,
-        target: "http://os.mnzdna.xyz",
+        // target: "https://os.mnzdna.xyz",
+        target: "http://localhost:8434",
       },
     },
   },
