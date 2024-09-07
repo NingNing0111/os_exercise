@@ -5,6 +5,8 @@ import { resolve } from "path";
 import AutoImport from "unplugin-auto-import/vite";
 // 自动导入UI组件
 import Components from "unplugin-vue-components/vite";
+// gzip压缩
+import viteCompression from "vite-plugin-compression";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,6 +22,7 @@ export default defineConfig({
       // 引入组件的信息存放位置
       dts: "src/components.d.ts",
     }),
+    viteCompression(),
   ],
   resolve: {
     alias: {
@@ -31,8 +34,8 @@ export default defineConfig({
     proxy: {
       "/api": {
         changeOrigin: true,
-        // target: "https://os.mnzdna.xyz",
-        target: "http://localhost:8434",
+        target: "https://os.mnzdna.xyz",
+        // target: "http://localhost:8434",
       },
     },
   },

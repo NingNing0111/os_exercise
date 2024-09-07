@@ -11,14 +11,14 @@
     "openapi:gen": "openapi --input http://localhost:8434/v3/api-docs --output ./src/api-client --client axios"
   },
   "dependencies": {
-    "@f3ve/vue-markdown-it": "^0.2.2",
     "axios": "^1.6.8",
     "element-plus": "^2.6.3",
     "md-editor-v3": "^4.19.2",
     "openapi-typescript-codegen": "^0.29.0",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vite-plugin-compression": "^0.5.1"
   },
   "devDependencies": {
     "@types/node": "^20.12.2",

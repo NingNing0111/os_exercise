@@ -7,11 +7,10 @@
   <div v-else id="detail">
     <div id="detail-left"></div>
     <div id="detail-main">
-      <VueMarkdownIt
-        :source="questionVO.content ?? ''"
-        :options="markdownItOption"
-        preset="commonmark"
-        :md-wrapper-class="`question-Markdown-Class`"
+      <MdPreview
+        :model-value="questionVO.content ?? '无'"
+        :code-foldable="false"
+        preview-theme="github"
       />
 
       <el-divider />
@@ -80,17 +79,17 @@
 
       <el-collapse>
         <el-collapse-item title="查看答案">
-          <VueMarkdownIt
-            :source="questionVO.answer ?? '无'"
-            :options="markdownItOption"
-            preset="commonmark"
+          <MdPreview
+            :model-value="questionVO.answer ?? '无'"
+            :code-foldable="false"
+            preview-theme="github"
           />
         </el-collapse-item>
         <el-collapse-item title="解释">
-          <VueMarkdownIt
-            :source="questionVO.explain ?? '无'"
-            :options="markdownItOption"
-            preset="commonmark"
+          <MdPreview
+            :model-value="questionVO.explain ?? '无'"
+            :code-foldable="false"
+            preview-theme="github"
           />
         </el-collapse-item>
 
@@ -127,15 +126,10 @@
 <script setup lang="ts">
 import router from "@/router";
 import { QuestionControllerService, QuestionVO } from "@/api-client";
-import { VueMarkdownIt } from "@f3ve/vue-markdown-it";
 import { ElMessage } from "element-plus";
+import { MdPreview } from "md-editor-v3";
 
 const questionVO = ref<QuestionVO>({});
-const markdownItOption = {
-  html: true,
-  linkify: true,
-  breaks: true,
-};
 
 const isLoading = ref(false);
 const userAns = ref<any>();
